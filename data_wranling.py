@@ -7,10 +7,10 @@ import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 data = pd.read_csv("train.csv")
 
 # Replace event names
-data['event'] = data['event'].str.replace('A','1')
-data['event'] = data['event'].str.replace('B','2')
-data['event'] = data['event'].str.replace('C','3')
-data['event'] = data['event'].str.replace('D','4')
+data['event'] = data['event'].str.replace('A','0001')
+data['event'] = data['event'].str.replace('B','0010')
+data['event'] = data['event'].str.replace('C','0100')
+data['event'] = data['event'].str.replace('D','1000')
 
 
 # Data slicing for computational purposes
@@ -37,6 +37,7 @@ for ind1 in exp:
             temp = data1[data1["experiment"]== ind1]
             temp1 = temp[temp["crew"]== ind2]
             signals[name] = temp1[temp1["seat"]== ind3]
+            signals[name].sort_values('time', inplace=True)
 
 # Example of use
-signals["CA_cr2_s1"].head()
+print(signals["CA_cr2_s1"].head())
