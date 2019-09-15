@@ -30,14 +30,16 @@ eeg = ['eeg_fp1', 'eeg_f7', 'eeg_f8',
 
 i = 0
 # Arrays for means and variances
-mean_dat = [None] * len(eeg)
-var_dat = [None] * len(eeg)
+
 
 # Mean and variance calculations
-for ind in eeg:
-    mean_dat[i] = np.mean(data1[ind])
-    var_dat[i] = np.var(data1[ind])
-    i = i +1
+
+hola = data1.to_numpy()
+hola = hola[:,4:27]
+hola = np.array(hola, dtype = float)
+
+mean_dat = np.mean(hola,axis =0)
+var_dat = np.var(hola,axis =0)
 
 #Data frame creation    
 data_stats = {'Signal':eeg, 'Mean':mean_dat, "Variance":var_dat} 
@@ -45,10 +47,14 @@ data_stats = pd.DataFrame(data_stats)
 data_stats.set_index("Signal")
 
 # Normalization: Substract mean and divide by variance
-for ind in eeg:
-    data1[ind] = data1[ind].apply(lambda x: (x- data_stats[data_stats["Signal"]== ind]["Mean"])/data_stats[data_stats["Signal"]== ind]["Variance"])
+#for ind in eeg:  
+ #   data1[ind] = data1[ind].apply(lambda x: (x- data_stats[data_stats["Signal"]== ind]["Mean"])/data_stats[data_stats["Signal"]== ind]["Variance"])
 
 
+
+tmp = np.divide((hola - mean_dat),var_dat)
+
+# HASTA ACÁ LLEGA. FALTA INCORPORAR AL DATA FRAME
 
 # Parsing data process 
     
