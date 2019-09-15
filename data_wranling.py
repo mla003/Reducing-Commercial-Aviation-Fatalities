@@ -1,6 +1,7 @@
 
 # Libraries
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import numpy as np # linear algebra
 
 
 # Data loading
@@ -14,12 +15,44 @@ data['event'] = data['event'].str.replace('D','1000')
 
 
 # Data slicing for computational purposes
-data1 = data[0:900000]
+data1 = data[0:1000]
+#data1 = data
 
-data1 = data
+
+# Normalization process
+
+# Array with signals
+eeg = ['eeg_fp1', 'eeg_f7', 'eeg_f8',
+       'eeg_t4', 'eeg_t6', 'eeg_t5', 'eeg_t3', 'eeg_fp2', 'eeg_o1', 'eeg_p3',
+       'eeg_pz', 'eeg_f3', 'eeg_fz', 'eeg_f4', 'eeg_c4', 'eeg_p4', 'eeg_poz',
+       'eeg_c3', 'eeg_cz', 'eeg_o2', 'ecg', 'r', 'gsr']
 
 
-# Parsing data
+i = 0
+# Arrays for means and variances
+mean_dat = [None] * len(eeg)
+var_dat = [None] * len(eeg)
+
+# Mean and variance calculations
+for ind in eeg:
+    mean_dat[i] = np.mean(data1[ind])
+    var_dat[i] = np.var(data1[ind])
+    i = i +1
+
+#Data frame creation    
+data_stats = {'Signal':eeg, 'Mean':mean_dat, "Variance":var_dat} 
+data_stats = pd.DataFrame(data_stats) 
+data_stats.set_index("Signal")
+
+# Normalization: Substract mean and divide by variance
+for ind in eeg:
+    data1[ind] = data1[ind].apply(lambda x: (x- data_stats[data_stats["Signal"]== ind]["Mean"])/data_stats[data_stats["Signal"]== ind]["Variance"])
+
+
+
+# Parsing data process 
+    
+    
 # We define the vectors contaning each feature
 exp = ["CA","DA","SS"]
 crew = [1,2,3,4,5,6,7,8,9]
@@ -40,4 +73,4 @@ for ind1 in exp:
             signals[name].sort_values('time', inplace=True)
 
 # Example of use
-print(signals["CA_cr2_s1"].head())
+print(signals["CA_cr1_s0"].head())
